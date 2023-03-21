@@ -35,7 +35,10 @@ export default function RegistrationScreen() {
           <TouchableOpacity style={styles.buttInput}>
             <Text>Зареєструватись</Text>
           </TouchableOpacity>
-          <Text style={styles.loginButt}>Вже є акаунт? Ввійти</Text>
+
+          <TouchableOpacity>
+            <Text style={styles.loginButt}>Вже є акаунт? Ввійти</Text>
+          </TouchableOpacity>
         </View>
       </View>
     </TouchableWithoutFeedback>

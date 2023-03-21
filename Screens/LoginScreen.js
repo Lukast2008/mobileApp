@@ -12,49 +12,33 @@ import {
 export default function LoginScreen() {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      {/* <View style={styles.container}> */}
-        {/* <ImageBackground
-          style={styles.image}
-          source={require("./img/photo.jpg")}
-        > */}
-          <View style={styles.form}>
-            <Text style={styles.title}>Ввійти</Text>
-            <TextInput style={styles.input} placeholder={"Електронна пошта"} />
-            <TextInput style={styles.input} placeholder={"Пароль"} />
+      <View style={styles.form}>
+        <Text style={styles.title}>Ввійти</Text>
+        <TextInput style={styles.input} placeholder={"Електронна пошта"} />
+        <TextInput style={styles.input} placeholder={"Пароль"} />
 
-            <TouchableOpacity style={styles.visiblePassword}>
-              <Text>Показати</Text>
-            </TouchableOpacity>
+        <TouchableOpacity style={styles.visiblePassword}>
+          <Text>Показати</Text>
+        </TouchableOpacity>
 
-            <TouchableOpacity style={styles.buttInput}>
-              <Text>Зареєструватись</Text>
-            </TouchableOpacity>
-            <Text style={styles.loginButt}>Немає акаунту? Зареєструватись</Text>
-          </View>
-        {/* </ImageBackground> */}
-      {/* </View> */}
+        <TouchableOpacity style={styles.buttInput}>
+          <Text>Зареєструватись</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity>
+          <Text style={styles.loginButt}>Немає акаунту? Зареєструватись</Text>
+        </TouchableOpacity>
+      </View>
     </TouchableWithoutFeedback>
   );
 }
 
 const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     backgroundColor: "#fff",
-//     fontFamily: "Roboto",
-//   },
-//   image: {
-//     flex: 1,
-//     resizeMode: "cover",
-//     justifyContent: "center",
-//   },
   form: {
     flex: 1,
     top: 323,
     backgroundColor: "#fff",
     borderRadius: 25,
-
-    // alignItems: "center",
     paddingHorizontal: 16,
   },
   title: {
@@ -88,10 +72,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: "center",
   },
-  visiblePassword:{
+  visiblePassword: {
     position: "relative",
     top: -49,
     left: 240,
     fontSize: 16,
-  }
+  },
 });
