@@ -23,8 +23,8 @@ export default function LoginScreen() {
   const [visibleButton, setVisibleButton] = useState(false);
   const [showPass, setShowPass] = useState(true);
   const [isFocusedInputName, setIsFocusedInputName] = useState("");
-  const [email, setEmail] = useState(userData.email);
-  const [password, setPassword] = useState(userData.password);
+
+  const [data, setData] = useState(userData);
 
   const keyBoardShow = () => {
     setVisibleButton(true);
@@ -38,33 +38,18 @@ export default function LoginScreen() {
     setShowPass(!showPass);
   };
 
-  const changeInput = (item) => {
-    switch (isFocusedInputName) {
-      case "email":
-        setEmail(item);
-        break;
-      case "password":
-        setPassword(item);
-        break;
-      default:
-    }
-    return userData;
-  };
-
   const submit = () => {
     const reg = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    if (!reg.test(email)) {
-      Alert.alert('Імеіл введено некоректно');
+    if (!reg.test(data.email)) {
+      Alert.alert("Імеіл введено некоректно");
       return;
     }
 
-
-    console.log("Email", email, "Password", password);
+    console.log(data);
     setShowPass(true);
 
-    setEmail(userData.email)
-    setPassword(userData.password)
+    setData(userData);
   };
 
   return (
@@ -77,9 +62,11 @@ export default function LoginScreen() {
             behavior={Platform.OS === "ios" ? "padding" : "height"}
           >
             <TextInput
-              value={email}
+              value={data.email}
               placeholder={"Електронна пошта"}
-              onChangeText={changeInput}
+              onChangeText={(value) =>
+                setData((prevState) => ({ ...prevState, email: value }))
+              }
               onFocus={() => {
                 keyBoardShow();
                 setIsFocusedInputName("email");
@@ -90,13 +77,14 @@ export default function LoginScreen() {
                   isFocusedInputName === "email" ? "#ff6c00" : "#e8e8e8",
               }}
               pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
-
             />
 
             <TextInput
-              value={password}
+              value={data.password}
               secureTextEntry={showPass && true}
-              onChangeText={changeInput}
+              onChangeText={(value) =>
+                setData((prevState) => ({ ...prevState, password: value }))
+              }
               placeholder={"Пароль"}
               onFocus={() => {
                 keyBoardShow();
@@ -113,7 +101,7 @@ export default function LoginScreen() {
               style={styles.visiblePassword}
               onPress={showPasswordOrNot}
             >
-              {showPass ?<Text>Показати</Text>:<Text>Приховати</Text> } 
+              {showPass ? <Text>Показати</Text> : <Text>Приховати</Text>}
             </TouchableOpacity>
           </KeyboardAvoidingView>
 
@@ -143,7 +131,6 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
     width: Dimensions.get("window").width,
     height: Dimensions.get("window").height,
-    // alignItems:"center",
   },
   form: {
     flex: 1,
@@ -162,10 +149,8 @@ const styles = StyleSheet.create({
   input: {
     height: 50,
     borderWidth: 1,
-
     backgroundColor: "#F6F6F6",
     borderRadius: 8,
-
     marginBottom: 15,
     fontSize: 16,
     paddingHorizontal: 16,

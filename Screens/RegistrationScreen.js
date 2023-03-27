@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Alert } from "react-native";
 
 import {
@@ -27,9 +27,7 @@ export default function RegistrationScreen() {
   const [showPass, setShowPass] = useState(true);
   const [isFocusedInputName, setIsFocusedInputName] = useState("");
 
-  const [login, setLogin] = useState(userData.login);
-  const [email, setEmail] = useState(userData.email);
-  const [password, setPassword] = useState(userData.password);
+  const [data, setData] = useState(userData);
 
   const keyBoardShow = () => {
     setVisibleButton(true);
@@ -44,24 +42,7 @@ export default function RegistrationScreen() {
     setShowPass(!showPass);
   };
 
-  const changeInput = (item) => {
-    // userData[isFocusedInputName] = item;
-    switch (isFocusedInputName) {
-      case "login":
-        setLogin(item);
-        break;
-      case "email":
-        setEmail(item);
-        break;
-      case "password":
-        setPassword(item);
-        break;
-      default:
-    }
-    return userData;
-  };
-
-  function validatePassword(pass) {
+  function validatePassword(password) {
     // Перевірка, чи пароль має не менше 8 символів
     if (password.length < 8) {
       Alert.alert("пароль має  менше 8 символів");
@@ -96,26 +77,24 @@ export default function RegistrationScreen() {
   const submit = () => {
     const reg = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    if (login.length < 3) {
+    if (data.login.length < 3) {
       Alert.alert("Логін повиден містити більше 3 символів");
       return;
     }
 
-    if (!reg.test(email)) {
+    if (!reg.test(data.email)) {
       Alert.alert("Імеіл введено некоректно");
       return;
     }
 
-    if (!validatePassword(password)) {
+    if (!validatePassword(data.password)) {
       return;
     }
 
-    console.log("Login", login, "Email", email, "Password", password);
+    console.log(data);
     setShowPass(true);
 
-    setEmail(userData.email);
-    setLogin(userData.login);
-    setPassword(userData.password);
+    setData(userData);
   };
 
   return (
@@ -133,8 +112,10 @@ export default function RegistrationScreen() {
               <Text style={styles.title}>Реєстрація</Text>
 
               <TextInput
-                value={login}
-                onChangeText={changeInput}
+                value={data.login}
+                onChangeText={(value) =>
+                  setData((prevState) => ({ ...prevState, login: value }))
+                }
                 placeholder={"Логін"}
                 onFocus={() => {
                   keyBoardShow();
@@ -148,7 +129,7 @@ export default function RegistrationScreen() {
               />
 
               <TextInput
-                value={email}
+                value={data.email}
                 placeholder={"Електронна пошта"}
                 onFocus={() => {
                   keyBoardShow();
@@ -159,11 +140,13 @@ export default function RegistrationScreen() {
                   borderColor:
                     isFocusedInputName === "email" ? "#ff6c00" : "#e8e8e8",
                 }}
-                onChangeText={changeInput}
+                onChangeText={(value) =>
+                  setData((prevState) => ({ ...prevState, email: value }))
+                }
                 pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
               />
               <TextInput
-                value={password}
+                value={data.password}
                 secureTextEntry={showPass && true}
                 placeholder={"Пароль"}
                 onFocus={() => {
@@ -175,7 +158,9 @@ export default function RegistrationScreen() {
                   borderColor:
                     isFocusedInputName === "password" ? "#ff6c00" : "#e8e8e8",
                 }}
-                onChangeText={changeInput}
+                onChangeText={(value) =>
+                  setData((prevState) => ({ ...prevState, password: value }))
+                }
               />
 
               <TouchableOpacity
@@ -211,7 +196,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
     width: Dimensions.get("window").width,
     height: Dimensions.get("window").height,
-    // alignItems:"center",
+  
   },
   form: {
     backgroundColor: "#fff",
@@ -247,16 +232,6 @@ const styles = StyleSheet.create({
     height: 50,
     borderWidth: 1,
     // borderColor: "#E8E8E8",
-    backgroundColor: "#F6F6F6",
-    borderRadius: 8,
-    marginBottom: 15,
-    fontSize: 16,
-    paddingHorizontal: 16,
-  },
-  inputFocus: {
-    height: 50,
-    borderWidth: 1,
-    borderColor: "#FF6C00",
     backgroundColor: "#F6F6F6",
     borderRadius: 8,
     marginBottom: 15,
