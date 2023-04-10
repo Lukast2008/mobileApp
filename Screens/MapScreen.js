@@ -6,16 +6,17 @@ import MapView, { Marker } from "react-native-maps";
 
 const MainTab = createBottomTabNavigator();
 
-export default function MapScreen({ navigation }) {
+export default function MapScreen({ navigation , route }) {
+
+  const { coords } = route.params;
   return (
     <View style={styles.container}>
       <MapView
         style={styles.map}
         initialRegion={{
-          latitude: 48.3927524,
-          longitude: 25.9460334,
-          latitudeDelta: 0.001,
-          longitudeDelta: 0.001,
+          ...coords,
+          latitudeDelta: 0.0922,
+          longitudeDelta: 0.0421,
         }}
       >
         <Marker coordinate={{ latitude: 48.3927524, longitude: 25.9460334 }} />

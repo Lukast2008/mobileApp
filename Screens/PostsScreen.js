@@ -15,20 +15,26 @@ import { Fontisto } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
 import CommentsScreen from "./CommentsScreen";
 
+import { db } from "../firebase/config";
+import { collection, onSnapshot } from "firebase/firestore";
+
 export default function PostsScreen({ navigation, route }) {
   const [postData, setPostData] = useState([]);
 
   const viewComments = () => {
     navigation.navigate("CommentsScreen");
+    s;
+  };
+
+  const getAllPost = async () => {
+    await onSnapshot(collection(db, "posts"), (snapshots) => {
+      setPostData(snapshots.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+    });
   };
 
   useEffect(() => {
-    if (route.params) {
-      setPostData((prevState) => [...prevState, route.params.post]);
-    }
-  }, [route.params]);
-
-  console.log(postData);
+    getAllPost();
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -56,11 +62,11 @@ export default function PostsScreen({ navigation, route }) {
         keyExtractor={(item, index) => index.toString()}
         renderItem={({ item }) => (
           <View style={styles.postField}>
-            <Image style={styles.imagePost} source={{ uri: item.photoUri }} />
-            <Text>{item.namePost}</Text>
+            <Image style={styles.imagePost} source={{ uri: item.photo }} />
+            <Text>{item.title}</Text>
             <View style={styles.postInfo}>
               <View style={styles.commentsCount}>
-                <TouchableOpacity onPress={() => viewComments(item.photoUri)}>
+                <TouchableOpacity onPress={() => viewComments(item.photo)}>
                   <Ionicons
                     name="chatbubble-outline"
                     size={24}
@@ -71,7 +77,9 @@ export default function PostsScreen({ navigation, route }) {
               </View>
 
               <TouchableOpacity
-                onPress={() => navigation.navigate("MapScreen")}
+                onPress={() =>
+                  navigation.navigate("MapScreen", { coords: item.coords })
+                }
               >
                 <AntDesign
                   style={styles.iconEnviromento}
@@ -81,7 +89,7 @@ export default function PostsScreen({ navigation, route }) {
                 />
               </TouchableOpacity>
 
-              <Text>{item.location}</Text>
+              <Text>{item.locationName}</Text>
             </View>
           </View>
         )}
@@ -166,7 +174,7 @@ const styles = StyleSheet.create({
   postInfo: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginBottom:34,
+    marginBottom: 34,
   },
   commentsCount: {
     flexDirection: "row",

@@ -17,11 +17,9 @@ import {
 import { useDispatch } from "react-redux";
 import { authSignInUser } from "../redux/auth/authOperations";
 
-
 const userData = {
   email: "",
   password: "",
-  nickname: "",
 };
 
 export default function LoginScreen({ navigation }) {
@@ -59,9 +57,6 @@ export default function LoginScreen({ navigation }) {
     setShowPass(true);
 
     setData(userData);
-
-    // navigation.navigate("Home", true);
-
 
     dispatch(authSignInUser(data));
   };

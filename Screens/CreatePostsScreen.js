@@ -37,13 +37,18 @@ const initialState = {
 };
 
 export default function CreatePostsScreen({ navigation }) {
-
-
   const [cameraRef, setCameraRef] = useState(null); // реф на компонент Camera
   const [photo, setPhoto] = useState(""); // фото, зроблене камерою
-  const [post, setPost] = useState(initialState);//
+
+  const [post, setPost] = useState(initialState); //
+
+  const [coords, setCoords] = useState(null);
+  const [title, setTitle] = useState("");
+  const [locationName, setLocationName] = useState("");
+
   const [btn, setBtn] = useState(false);
   const [preview, serPreview] = useState(false);
+
   const { userId, nickname } = useSelector((state) => state.auth);
 
   const handleTakePhoto = async () => {
@@ -53,21 +58,23 @@ export default function CreatePostsScreen({ navigation }) {
     setPost((prevState) => ({ ...prevState, photoUri: uri }));
     serPreview(true);
 
-    const locationPhoto = await Location.getCurrentPositionAsync({});
-    // console.log("latitude", locationPhoto.coords.latitude);
-    // console.log("longitude", locationPhoto.coords.longitude);
+    let locPhoto = await Location.getCurrentPositionAsync({});
+
+    const coords = {
+      latitude: locPhoto.coords.latitude,
+      longitude: locPhoto.coords.longitude,
+    };
+    setCoords(coords);
   };
 
   const navPrevPage = async () => {
     await navigation.navigate("PostsScreen");
   };
 
-  const sendData = () => {
+  const sendData = async () => {
     if (btn) {
-
       uploadPostToServer();
-      navigation.navigate("PostsScreen", { post });
-      
+      navigation.navigate("PostsScreen");
     }
   };
 
@@ -77,37 +84,23 @@ export default function CreatePostsScreen({ navigation }) {
   };
 
   useEffect(() => {
-    if (
-      (post.namePost !== "") &
-      (post.location !== "") &
-      (post.photoUri !== "")
-    ) {
+    if ((title !== "") & (locationName !== "") & (post.photoUri !== "")) {
       setBtn(true);
       return;
     }
     setBtn(false);
-  }, [post]);
+  }, [title, locationName, post]);
 
   const uploadPostToServer = async () => {
-    const photo = await uploadPhotoToServer();
-    console.log({
-      // photo,
-      location,
-      // userId,
-      // nickname,
-      // state,
-      // title,
-      // locationName,
-    })
-    // const createPost = await addDoc(collection(db, "posts"), {
-    //   photo,
-    //   location,
-    //   userId,
-    //   login,
-    //   state,
-    //   title,
-    //   locationName,
-    // });
+    const postPhoto = await uploadPhotoToServer();
+    const createPost = await addDoc(collection(db, "posts"), {
+      photo,
+      coords,
+      userId,
+      nickname,
+      title,
+      locationName,
+    });
   };
 
   const uploadPhotoToServer = async () => {
@@ -173,18 +166,14 @@ export default function CreatePostsScreen({ navigation }) {
           <TextInput
             placeholder={"Назва"}
             style={styles.input}
-            onChangeText={(value) =>
-              setPost((prevState) => ({ ...prevState, namePost: value }))
-            }
+            onChangeText={setTitle}
           />
 
           <View>
             <TextInput
               placeholder={"Місцевість"}
               style={{ ...styles.input, paddingLeft: 30 }}
-              onChangeText={(value) =>
-                setPost((prevState) => ({ ...prevState, location: value }))
-              }
+              onChangeText={setLocationName}
             />
             <AntDesign
               style={styles.iconEnviromento}
